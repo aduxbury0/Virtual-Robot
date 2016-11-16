@@ -1,14 +1,17 @@
 from tkinter import *
+
+
 root = Tk()
 root.resizable(width=False, height=False)
 
-mainFrame = Frame(root, width=400, height=400, bg="white")
+mainFrame = Frame(root, height="200", width="200")
 mainFrame.pack()
 
-
-mainTitle = Text(mainFrame)
-mainTitle.insert(END, "Virtual Robot \n Simulator")
+mainTitle = Label(mainFrame, image, width=60, height=25, bg="white")
+# mainTitle = Label(mainFrame, text="Virtual Robot \nProject", width=60, height=25, bg="white")
 mainTitle.pack()
 
-root.mainloop()
+startButton = Button(mainFrame, text="Start", width=6, height=2, font="Arial")
+startButton.pack()
 
+root.mainloop()
