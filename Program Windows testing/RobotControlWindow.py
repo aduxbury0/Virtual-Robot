@@ -1,4 +1,5 @@
 from tkinter import *
+import time
 
 difficulty = "Virtual Robot Simulator - Easy"
 robotDistance = 300000
