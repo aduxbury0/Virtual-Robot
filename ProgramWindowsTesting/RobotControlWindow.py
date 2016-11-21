@@ -1,11 +1,9 @@
 from tkinter import *
 import time
 
-# yspeed = 5.0
-# xspeed = 10.0
-
 difficulty = "Virtual Robot Simulator - Easy"
 robotDistance = 300000
+roboton = False
 
 # This is the main TK window
 root = Tk()
@@ -17,10 +15,19 @@ mainFrame = Frame(root, width=800, height=400)
 mainFrame.pack()
 
 # This is the left hand side canvas for the robot to move on
-robotcanvas = Canvas(mainFrame, width=500, height=400, bg="grey")
-robotcanvas.pack(side="left")
+robotcanvas = Canvas(mainFrame, width=500, height=400, bg="white")
+
 # Initial drawing of the robot block
 robot1 = robotcanvas.create_rectangle(3, 7, 3 + 10, 7 + 10, fill="white")
+wall1 = robotcanvas.create_rectangle(0, 50, 25, 400, fill="grey", outline="grey")
+wall2 = robotcanvas.create_rectangle(0, 0, 500, 50, fill="grey", outline="grey")
+wall3 = robotcanvas.create_rectangle(475, 50, 500, 400, fill="grey", outline="grey")
+wall4 = robotcanvas.create_rectangle(100, 125, 125, 400, fill="grey", outline="grey")
+wall5 = robotcanvas.create_rectangle(375, 125, 400, 400, fill="grey", outline="grey")
+wall6 = robotcanvas.create_rectangle(125, 300, 375, 400, fill="grey", outline="grey")
+wall7 = robotcanvas.create_rectangle(200, 50, 300, 225, fill="grey", outline="grey")
+robotcanvas.pack(side="left")
+
 
 # This is the frame that contains all of the control inputs on the right hand side of the screen
 controlFrame = Frame(mainFrame, width=300, height=400, bg="gray90", pady="10")
@@ -54,10 +61,23 @@ distanceLabel = Label(distanceCounterFrame, text="The robot is\n" + str(robotDis
 distanceLabel.config(font=("Arial", 13), relief="groove")
 distanceLabel.grid(row="2", column="0", columnspan="2")
 
-class Objects:
 
-    def __init__(self):
+# class Objects:
 
+#    def __init__(self, objectname, xmin, xmax, ymin, ymax, object_type, object_colour):
+#        self.objectname = objectname
+#        self.xmin = xmin
+#        self.xmax = xmax
+#        self.ymin = ymin
+#        self.ymax = ymax
+#        self.type = object_type
+#        self.colour = object_colour
+#        robotcanvas.create_rectangle(self.xmin, self.ymin, self.xmax, self.ymax, fill=self.colour)
+
+#    def create_object(self):
+
+
+# wall10 = Objects("Wall 10", 0, 0, 300, 300, "wall", "Red")
 
 
 def move_object():
@@ -69,7 +89,8 @@ def move_object():
     x_max = 500.0
     y_max = 400.0
     startButton.config(state="disabled")
-    for t in range(1, 500):
+#    for t in range(1, 500):
+    while robot_on == True:
         stopButton.config(state="normal")
         x1, y1, x2, y2 = robotcanvas.coords(robot1)
     # If a boundary has been crossed, reverse the direction
@@ -88,8 +109,16 @@ def move_object():
     startButton.config(state="normal")
     stopButton.config(state="disabled")
 
-startButton.config(command=move_object)
 
+def stop_object(robot_on):
+    if robot_on:
+        robot_on = False
+    else:
+        robot_on = True
+    return robot_on
+
+startButton.config(command=move_object)
+stopButton
 root.mainloop()
 
 
