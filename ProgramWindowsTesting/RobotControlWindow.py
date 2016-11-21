@@ -1,8 +1,8 @@
 from tkinter import *
 import time
 
-yspeed = 5.0
-xspeed = 10.0
+# yspeed = 5.0
+# xspeed = 10.0
 
 difficulty = "Virtual Robot Simulator - Easy"
 robotDistance = 300000
@@ -54,16 +54,22 @@ distanceLabel = Label(distanceCounterFrame, text="The robot is\n" + str(robotDis
 distanceLabel.config(font=("Arial", 13), relief="groove")
 distanceLabel.grid(row="2", column="0", columnspan="2")
 
+class Objects:
 
-def move_object(vx, vy):
+    def __init__(self):
+
+
+
+def move_object():
     # Boundaries
+    vy = 5.0
+    vx = 10.0
     x_min = 0.0
     y_min = 0.0
     x_max = 500.0
     y_max = 400.0
     startButton.config(state="disabled")
     for t in range(1, 500):
-#   while startButton.config(state="disabled"):
         stopButton.config(state="normal")
         x1, y1, x2, y2 = robotcanvas.coords(robot1)
     # If a boundary has been crossed, reverse the direction
@@ -82,8 +88,7 @@ def move_object(vx, vy):
     startButton.config(state="normal")
     stopButton.config(state="disabled")
 
-# startButton.config(command=move_object(xspeed, yspeed))
-startButton.bind("<Button-1>", move_object(xspeed, yspeed))
+startButton.config(command=move_object)
 
 root.mainloop()
 
