@@ -3,7 +3,9 @@ import time
 
 difficulty = "Virtual Robot Simulator - Easy"
 robotDistance = 300000
-roboton = False
+global robot_on
+robot_on = True
+
 
 # This is the main TK window
 root = Tk()
@@ -80,6 +82,14 @@ distanceLabel.grid(row="2", column="0", columnspan="2")
 # wall10 = Objects("Wall 10", 0, 0, 300, 300, "wall", "Red")
 
 
+def stop_object():
+    robot_on = False
+
+
+def object_detection():
+    pass
+
+
 def move_object():
     # Boundaries
     vy = 5.0
@@ -90,7 +100,7 @@ def move_object():
     y_max = 400.0
     startButton.config(state="disabled")
 #    for t in range(1, 500):
-    while robot_on == True:
+    while robot_on:
         stopButton.config(state="normal")
         x1, y1, x2, y2 = robotcanvas.coords(robot1)
     # If a boundary has been crossed, reverse the direction
@@ -109,14 +119,7 @@ def move_object():
     startButton.config(state="normal")
     stopButton.config(state="disabled")
 
-
-def stop_object(robot_on):
-    if robot_on:
-        robot_on = False
-    else:
-        robot_on = True
-    return robot_on
-
 startButton.config(command=move_object)
-stopButton
+stopButton.config(comman=stop_object)
+
 root.mainloop()
