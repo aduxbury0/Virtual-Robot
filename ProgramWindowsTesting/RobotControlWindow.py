@@ -1,7 +1,5 @@
 from tkinter import *
 import time
-global robot_on
-robot_speed = StringVar
 
 difficulty = "Virtual Robot Simulator - Easy"
 robotDistance = 300000
@@ -9,6 +7,7 @@ robotDistance = 300000
 root = Tk()
 root.resizable(width=False, height=False)
 root.title(difficulty)
+robot_speed_variable = StringVar()
 
 # This is the main frame within the Tk window, it sets the total size of the window
 mainFrame = Frame(root, width=800, height=400)
@@ -47,15 +46,16 @@ distanceCounterFrame = Frame(controlFrame, width=300, height=200, bg="gray90", b
 distanceCounterFrame.pack_propagate(0)
 distanceCounterFrame.pack(side="bottom")
 
-
-robotSpeedInput = Entry(inputsFrame)
-robotSpeedInput.grid(row="1", column="0", padx="5")
+speedDescriptionLabel = Label(inputsFrame, text="Enter a number between 1 and 0.01 (1 being slowest)", bg="gray90")
+speedDescriptionLabel.grid(row="1", column="0", columnspan=2, padx="5")
+robotSpeedInput = Entry(inputsFrame, textvariable=robot_speed_variable)
+robotSpeedInput.grid(row="2", column="0", padx="5")
 robotSpeedButton = Button(inputsFrame, text="Set Speed")
-robotSpeedButton.grid(row="1", column="1", sticky="W", padx="5", pady="5")
+robotSpeedButton.grid(row="2", column="1", sticky="W", padx="5", pady="5")
 setDistanceInput = Entry(inputsFrame)
-setDistanceInput.grid(row="2", column="0", padx="5")
+setDistanceInput.grid(row="3", column="0", padx="5")
 distanceInputButton = Button(inputsFrame, text="Set Distance", state="disabled")
-distanceInputButton.grid(row="2", column="1", padx="5", pady="5")
+distanceInputButton.grid(row="3", column="1", padx="5", pady="5", sticky="w")
 
 startButton = Button(distanceCounterFrame, text="Start", padx="10", pady="5")
 startButton.grid(row="0", column="0", pady="15")
@@ -66,35 +66,48 @@ distanceLabel.config(font=("Arial", 13), relief="groove")
 distanceLabel.grid(row="2", column="0", columnspan="2")
 
 
-def set_speed():
-    robot_speed = robotSpeedInput.get()
-    print(robot_speed)
-    if robot_speed == 1:
-        refresh_speed = 0.45
-    elif robot_speed == 2:
-        refresh_speed = 0.4
-    elif robot_speed == 3:
-        refresh_speed = 0.35
-    elif robot_speed == 4:
-        refresh_speed = 0.3
-    elif robot_speed == 5:
-        refresh_speed = 0.25
-    elif robot_speed == 6:
-        refresh_speed = 0.2
-    elif robot_speed == 7:
-        refresh_speed = 0.15
-    elif robot_speed == 8:
-        refresh_speed = 0.1
-    elif robot_speed == 9:
-        refresh_speed = 0.05
-    else:
-        refresh_speed = 0.01
-    return refresh_speed
+#def set_speed():
+#    robot_speed = robot_speed_variable.get
+#    print(robot_speed)
+#    if robot_speed == str(1):
+#        refresh_speed = float(0.45)
+#    elif robot_speed == str(2):
+#        refresh_speed = float(0.4)
+#    elif robot_speed == str(3):
+#        refresh_speed = float(0.35)
+#    elif robot_speed == str(4):
+#        refresh_speed = float(0.3)
+#    elif robot_speed == str(5):
+#        refresh_speed = float(0.25)
+#    elif robot_speed == str(6):
+#        refresh_speed = float(0.2)
+#    elif robot_speed == str(7):
+#        refresh_speed = float(0.15)
+#    elif robot_speed == str(8):
+#        refresh_speed = float(0.1)
+#    elif robot_speed == str(9):
+#        refresh_speed = float(0.05)
+#    else:
+#        refresh_speed = float(0.01)
+#    return refresh_speed
 
 
-def stop_object():
-    robot_on = False
-    return robot_on
+# def stop_object():
+#    robot_on = False
+#    return robot_on
+
+"""This function is used to detect the collisions between the robot and the other static objects in the arena,
+it takes 7 arguments -
+x1 - is the first x coordinate of the current position of the robot
+y1 - is the first y coordinate of the current position of the robot
+x2 - is the second x coordinate of the current position of the robot
+y2 - is the second y coordinate of the current position of the robot
+vx - is the horizontal speed of the robot (+ive number indicates movement toward the far side of the canvas)
+vy - is the vertical speed of the robot (+ive number indicates moving towards the bottom of the canvas)
+colliding_object is the object on the canvas that is passed into the function
+
+the function then returns a new v value depending on where on the object the robot collides with,
+if it collides with nothing then it returns the original vx and vy values that were passed in"""
 
 
 def object_detection(x1, y1, x2, y2, vx, vy,  colliding_object):
@@ -126,6 +139,17 @@ def object_detection(x1, y1, x2, y2, vx, vy,  colliding_object):
         return vx, vy
 
 
+"""This function is used to detect the collisions between the robot and the finish line.
+it takes 5 arguments -
+x1 - is the first x coordinate of the current position of the robot
+y1 - is the first y coordinate of the current position of the robot
+x2 - is the second x coordinate of the current position of the robot
+y2 - is the second y coordinate of the current position of the robot
+colliding_object is the object on the canvas that is passed into the function
+
+the function returns True or False depending on whether is has has hit or not, true for a hit and false for anything else"""
+
+
 def finish_detection(x1, y1, x2, y2, colliding_object):
     ox1, oy1, ox2, oy2 = robotcanvas.bbox(colliding_object)
     print(oy1, oy2, ox1, ox2)
@@ -148,6 +172,9 @@ def finish_detection(x1, y1, x2, y2, colliding_object):
     else:
         return False
 
+"""This function creates a message box with "The robot is finished" as a label on it, and creates a button that
+destroys the text box when pressed. It takes no arguments from anywhere else"""
+
 
 def finish_message():
     finish_popup = Tk()
@@ -161,6 +188,20 @@ def finish_message():
     finish_popup.mainloop()
 
 
+"""This is the main looping part of the program, it takes no inputs but:
+- it creates variables for the speed of the robot
+- it sets the maximum x and y coords of the entire canvas
+- sets robot_on to be true so that the while loop will run until it is set to False
+- it takes the text written in the speed entry box and then converts it to a standard variable from a stringvar, then
+gives it to the sleep function to determin how fast the canvas is redrawn
+- it sets the robot coords back to their starting position when the function is called
+- it has a while loop that moves the robot while checking for object collisions by calling the object_detection function
+- it makes sure the robot does not go out of bounds of the canvas
+- it checks to see if the robot has reached the finishing line, and if so then breaks from the loop
+- it redraws the robot based on the positions given back by the object_detection and finish_detection functions
+- it then waits to start the next iteration of the loop"""
+
+
 def move_object():
     # Boundaries
     vy = -1.0
@@ -170,13 +211,11 @@ def move_object():
     x_max = 500.0
     y_max = 400.0
     robot_on = True
+#    refresh_speed = set_speed()
+    refresh_speed = float(robot_speed_variable.get())
     robotcanvas.coords(robot1, 30, 380, 30 + 10, 380 + 10)
     robotcanvas.update()
-    refresh_speed = int(set_speed())
-    print(refresh_speed)
-    startButton.config(state="disabled")
     while robot_on:
-        stopButton.config(state="normal")
         x1, y1, x2, y2 = robotcanvas.coords(robot1)
     # If a boundary has been crossed, reverse the direction
         vx, vy = object_detection(x1, y1, x2, y2, vx, vy, wall1)
@@ -198,13 +237,11 @@ def move_object():
             break
         robotcanvas.coords(robot1, x1+vx, y1+vy, x2+vx, y2+vy)
         robotcanvas.update()
+        print(refresh_speed)
         time.sleep(refresh_speed)
-    startButton.config(state="normal")
-    stopButton.config(state="disabled")
 
 
 startButton.config(command=move_object)
-stopButton.config(command=stop_object)
 
 
 root.mainloop()
